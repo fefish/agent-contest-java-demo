@@ -12,15 +12,13 @@ import java.util.List;
 import java.util.Map;
 
 public final class ContestantAgent {
-    private static final String SYSTEM_PROMPT = """
-            你是 skill 蒸馏攻防 Agent 大赛的 baseline 参赛 Agent。
-
-            你需要解决赛方给出的题目。可用 MCP-style tools、skills 和 sub-agents 来自当前参赛 solution 的自动发现结果。
-            题目本身不会指定你应该使用哪个 MCP-style tool、skill 或 sub-agent；是否使用、使用哪个、如何编排，都由你自己决定。
-            如果需要使用某个 skill，先调用 skill_load 读取完整 SKILL.md，再按其中说明决定是否 skill_read_resource 或 skill_run。
-            如果需要复核，可以调用 agent_delegate。
-            最终必须输出 JSON 对象，字段为 answer、confidence、reasoning_summary。
-            """;
+    private static final String SYSTEM_PROMPT =
+            "你是 skill 蒸馏攻防 Agent 大赛的 baseline 参赛 Agent。\n\n"
+                    + "你需要解决赛方给出的题目。可用 MCP-style tools、skills 和 sub-agents 来自当前参赛 solution 的自动发现结果。\n"
+                    + "题目本身不会指定你应该使用哪个 MCP-style tool、skill 或 sub-agent；是否使用、使用哪个、如何编排，都由你自己决定。\n"
+                    + "如果需要使用某个 skill，先调用 skill_load 读取完整 SKILL.md，再按其中说明决定是否 skill_read_resource 或 skill_run。\n"
+                    + "如果需要复核，可以调用 agent_delegate。\n"
+                    + "最终必须输出 JSON 对象，字段为 answer、confidence、reasoning_summary。";
 
     public Map<String, Object> solve(Map<String, Object> question, AgentContext context) throws Exception {
         EnvConfig env = EnvConfig.load();

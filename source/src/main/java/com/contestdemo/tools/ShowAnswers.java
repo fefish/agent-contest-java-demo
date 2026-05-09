@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public final class ShowAnswers {
     public static void main(String[] args) throws Exception {
@@ -36,7 +37,7 @@ public final class ShowAnswers {
         if (list.isEmpty()) {
             return "-";
         }
-        return String.join(", ", list.stream().map(Json::string).toList());
+        return String.join(", ", list.stream().map(Json::string).collect(Collectors.toList()));
     }
 
     private static String indent(String text) {

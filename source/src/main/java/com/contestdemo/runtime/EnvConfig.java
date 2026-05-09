@@ -42,10 +42,12 @@ public final class EnvConfig {
         if (value == null) {
             return defaultValue;
         }
-        return switch (value.trim().toLowerCase()) {
-            case "1", "true", "yes", "y", "on" -> true;
-            default -> false;
-        };
+        String normalized = value.trim().toLowerCase();
+        return normalized.equals("1")
+                || normalized.equals("true")
+                || normalized.equals("yes")
+                || normalized.equals("y")
+                || normalized.equals("on");
     }
 
     public int integer(String name, int defaultValue) {

@@ -9,6 +9,8 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class AgentRegistry {
     private static final Path AGENTS_DIR = Path.of("source", "solution", "agents");
@@ -23,8 +25,11 @@ public final class AgentRegistry {
         if (!Files.isDirectory(AGENTS_DIR)) {
             return;
         }
-        try (var stream = Files.list(AGENTS_DIR)) {
-            for (Path dir : stream.filter(Files::isDirectory).sorted(Comparator.naturalOrder()).toList()) {
+        try (Stream<Path> stream = Files.list(AGENTS_DIR)) {
+            List<Path> agentDirs = stream.filter(Files::isDirectory)
+                    .sorted(Comparator.naturalOrder())
+                    .collect(Collectors.toList());
+            for (Path dir : agentDirs) {
                 Map<String, Object> metadata = readJson(dir.resolve("agent.json"));
                 String name = Json.string(metadata.getOrDefault("name", dir.getFileName().toString()));
                 String entrypoint = Json.string(metadata.getOrDefault("entrypoint", "scripts/Run.java"));
@@ -82,6 +87,17 @@ public final class AgentRegistry {
         return Files.isExecutable(java) ? java.toString() : "java";
     }
 
-    private record AgentPackage(String name, Path dir, String entrypoint, int timeoutSeconds) {
+    private static final class AgentPackage {
+        private final String name;
+        private final Path dir;
+        private final String entrypoint;
+        private final int timeoutSeconds;
+
+        private AgentPackage(String name, Path dir, String entrypoint, int timeoutSeconds) {
+            this.name = name;
+            this.dir = dir;
+            this.entrypoint = entrypoint;
+            this.timeoutSeconds = timeoutSeconds;
+        }
     }
 }

@@ -10,7 +10,7 @@ JAVAC_CMD="$(detect_javac)"
 
 "$JAVA_CMD" -version
 "$JAVAC_CMD" -version
-echo "required runtime: JDK 17+, stdlib only"
+echo "required runtime: JDK 11+, stdlib only"
 
 model_url=""
 model_name=""

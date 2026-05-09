@@ -43,8 +43,11 @@ public final class TraceRecorder {
                 String tool = Json.string(event.get("name"));
                 if (tool.equals("skill_load") || tool.equals("skill_read_resource") || tool.equals("skill_run")) {
                     Object args = event.get("args");
-                    if (args instanceof Map<?, ?> map && map.get("name") != null) {
-                        names.add(Json.string(map.get("name")));
+                    if (args instanceof Map<?, ?>) {
+                        Map<?, ?> map = (Map<?, ?>) args;
+                        if (map.get("name") != null) {
+                            names.add(Json.string(map.get("name")));
+                        }
                     }
                 }
             }

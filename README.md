@@ -48,6 +48,6 @@ source/examples/files/                 题目附件，可选
 cp .env.example .env
 ```
 
-本 demo 使用 Java 标准库实现，无需 Maven/Gradle；需要 JDK 17+。
+本 demo 使用 Java 标准库实现，无需 Maven/Gradle；需要 JDK 11+。
 
 详细说明见 [doc/README.md](doc/README.md)。

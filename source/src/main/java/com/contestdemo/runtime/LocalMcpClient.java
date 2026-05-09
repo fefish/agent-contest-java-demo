@@ -4,6 +4,7 @@ import com.contestdemo.toolkits.MainMcp;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public final class LocalMcpClient {
     private final MainMcp mcp = new MainMcp();
@@ -25,7 +26,7 @@ public final class LocalMcpClient {
     }
 
     public List<Map<String, Object>> listOpenAiTools() {
-        return mcp.tools().stream().map(McpTool::toOpenAiTool).toList();
+        return mcp.tools().stream().map(McpTool::toOpenAiTool).collect(Collectors.toList());
     }
 
     public Object callTool(String name, Map<String, Object> args, AgentContext context) throws Exception {

@@ -10,6 +10,8 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class SkillRuntime {
     private static final Path SKILLS_DIR = Path.of("source", "solution", "skills");
@@ -25,8 +27,9 @@ public final class SkillRuntime {
             return;
         }
         try {
-            try (var stream = Files.list(SKILLS_DIR)) {
-                for (Path dir : stream.filter(Files::isDirectory).sorted().toList()) {
+            try (Stream<Path> stream = Files.list(SKILLS_DIR)) {
+                List<Path> skillDirs = stream.filter(Files::isDirectory).sorted().collect(Collectors.toList());
+                for (Path dir : skillDirs) {
                     Path skillMd = dir.resolve("SKILL.md");
                     if (!Files.exists(skillMd)) {
                         continue;
@@ -169,7 +172,7 @@ public final class SkillRuntime {
             if (!Files.isDirectory(base)) {
                 continue;
             }
-            try (var stream = Files.walk(base)) {
+            try (Stream<Path> stream = Files.walk(base)) {
                 stream.filter(Files::isRegularFile)
                         .sorted(Comparator.naturalOrder())
                         .forEach(path -> result.add(dir.relativize(path).toString().replace('\\', '/')));
@@ -200,15 +203,34 @@ public final class SkillRuntime {
         return Files.isExecutable(java) ? java.toString() : "java";
     }
 
-    private record SkillPackage(
-            String name,
-            String description,
-            Path dir,
-            String rawMarkdown,
-            Map<String, Object> metadata,
-            String entrypoint,
-            int timeoutSeconds,
-            List<String> resources
-    ) {
+    private static final class SkillPackage {
+        private final String name;
+        private final String description;
+        private final Path dir;
+        private final String rawMarkdown;
+        private final Map<String, Object> metadata;
+        private final String entrypoint;
+        private final int timeoutSeconds;
+        private final List<String> resources;
+
+        private SkillPackage(
+                String name,
+                String description,
+                Path dir,
+                String rawMarkdown,
+                Map<String, Object> metadata,
+                String entrypoint,
+                int timeoutSeconds,
+                List<String> resources
+        ) {
+            this.name = name;
+            this.description = description;
+            this.dir = dir;
+            this.rawMarkdown = rawMarkdown;
+            this.metadata = metadata;
+            this.entrypoint = entrypoint;
+            this.timeoutSeconds = timeoutSeconds;
+            this.resources = resources;
+        }
     }
 }

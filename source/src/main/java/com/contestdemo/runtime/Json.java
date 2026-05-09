@@ -27,8 +27,8 @@ public final class Json {
     }
 
     public static double number(Object value, double defaultValue) {
-        if (value instanceof Number number) {
-            return number.doubleValue();
+        if (value instanceof Number) {
+            return ((Number) value).doubleValue();
         }
         try {
             return Double.parseDouble(string(value));
@@ -46,11 +46,12 @@ public final class Json {
     private static void write(Object value, StringBuilder out, int indent) {
         if (value == null) {
             out.append("null");
-        } else if (value instanceof String string) {
-            writeString(string, out);
+        } else if (value instanceof String) {
+            writeString((String) value, out);
         } else if (value instanceof Number || value instanceof Boolean) {
             out.append(value);
-        } else if (value instanceof Map<?, ?> map) {
+        } else if (value instanceof Map<?, ?>) {
+            Map<?, ?> map = (Map<?, ?>) value;
             out.append("{");
             boolean first = true;
             for (Map.Entry<?, ?> entry : map.entrySet()) {
@@ -67,7 +68,8 @@ public final class Json {
                 out.append("\n").append(" ".repeat(indent));
             }
             out.append("}");
-        } else if (value instanceof Iterable<?> list) {
+        } else if (value instanceof Iterable<?>) {
+            Iterable<?> list = (Iterable<?>) value;
             out.append("[");
             boolean first = true;
             for (Object item : list) {
@@ -92,20 +94,34 @@ public final class Json {
         for (int i = 0; i < string.length(); i++) {
             char c = string.charAt(i);
             switch (c) {
-                case '"' -> out.append("\\\"");
-                case '\\' -> out.append("\\\\");
-                case '\b' -> out.append("\\b");
-                case '\f' -> out.append("\\f");
-                case '\n' -> out.append("\\n");
-                case '\r' -> out.append("\\r");
-                case '\t' -> out.append("\\t");
-                default -> {
+                case '"':
+                    out.append("\\\"");
+                    break;
+                case '\\':
+                    out.append("\\\\");
+                    break;
+                case '\b':
+                    out.append("\\b");
+                    break;
+                case '\f':
+                    out.append("\\f");
+                    break;
+                case '\n':
+                    out.append("\\n");
+                    break;
+                case '\r':
+                    out.append("\\r");
+                    break;
+                case '\t':
+                    out.append("\\t");
+                    break;
+                default:
                     if (c < 0x20) {
                         out.append(String.format("\\u%04x", (int) c));
                     } else {
                         out.append(c);
                     }
-                }
+                    break;
             }
         }
         out.append('"');
@@ -213,20 +229,38 @@ public final class Json {
                 if (c == '\\' && pos < text.length()) {
                     char escaped = text.charAt(pos++);
                     switch (escaped) {
-                        case '"' -> out.append('"');
-                        case '\\' -> out.append('\\');
-                        case '/' -> out.append('/');
-                        case 'b' -> out.append('\b');
-                        case 'f' -> out.append('\f');
-                        case 'n' -> out.append('\n');
-                        case 'r' -> out.append('\r');
-                        case 't' -> out.append('\t');
-                        case 'u' -> {
+                        case '"':
+                            out.append('"');
+                            break;
+                        case '\\':
+                            out.append('\\');
+                            break;
+                        case '/':
+                            out.append('/');
+                            break;
+                        case 'b':
+                            out.append('\b');
+                            break;
+                        case 'f':
+                            out.append('\f');
+                            break;
+                        case 'n':
+                            out.append('\n');
+                            break;
+                        case 'r':
+                            out.append('\r');
+                            break;
+                        case 't':
+                            out.append('\t');
+                            break;
+                        case 'u':
                             String hex = text.substring(pos, Math.min(pos + 4, text.length()));
                             pos += Math.min(4, hex.length());
                             out.append((char) Integer.parseInt(hex, 16));
-                        }
-                        default -> out.append(escaped);
+                            break;
+                        default:
+                            out.append(escaped);
+                            break;
                     }
                 } else {
                     out.append(c);

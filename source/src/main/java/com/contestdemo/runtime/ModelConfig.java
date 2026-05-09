@@ -1,14 +1,32 @@
 package com.contestdemo.runtime;
 
-public record ModelConfig(
-        String chatCompletionsUrl,
-        String apiKey,
-        String model,
-        int timeoutSeconds,
-        double temperature,
-        int maxTokens,
-        boolean stream
-) {
+public final class ModelConfig {
+    private final String chatCompletionsUrl;
+    private final String apiKey;
+    private final String model;
+    private final int timeoutSeconds;
+    private final double temperature;
+    private final int maxTokens;
+    private final boolean stream;
+
+    public ModelConfig(
+            String chatCompletionsUrl,
+            String apiKey,
+            String model,
+            int timeoutSeconds,
+            double temperature,
+            int maxTokens,
+            boolean stream
+    ) {
+        this.chatCompletionsUrl = chatCompletionsUrl;
+        this.apiKey = apiKey;
+        this.model = model;
+        this.timeoutSeconds = timeoutSeconds;
+        this.temperature = temperature;
+        this.maxTokens = maxTokens;
+        this.stream = stream;
+    }
+
     public static ModelConfig fromEnv(EnvConfig env) {
         String chatUrl = env.get("MODEL_CHAT_COMPLETIONS_URL", "");
         String baseUrl = env.get("MODEL_BASE_URL", "");
@@ -27,6 +45,34 @@ public record ModelConfig(
                 env.integer("AGENT_DEMO_MAX_TOKENS", 0),
                 env.bool("AGENT_DEMO_STREAM", false)
         );
+    }
+
+    public String chatCompletionsUrl() {
+        return chatCompletionsUrl;
+    }
+
+    public String apiKey() {
+        return apiKey;
+    }
+
+    public String model() {
+        return model;
+    }
+
+    public int timeoutSeconds() {
+        return timeoutSeconds;
+    }
+
+    public double temperature() {
+        return temperature;
+    }
+
+    public int maxTokens() {
+        return maxTokens;
+    }
+
+    public boolean stream() {
+        return stream;
     }
 
     public boolean configured() {

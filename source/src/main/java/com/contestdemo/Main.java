@@ -3,6 +3,7 @@ package com.contestdemo;
 import com.contestdemo.runtime.BatchRunner;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 
 public final class Main {
@@ -10,7 +11,7 @@ public final class Main {
         Map<String, String> parsed = parseArgs(args);
         Path question = Path.of(parsed.getOrDefault("--question", "source/examples/questions.json"));
         Path output = Path.of(parsed.getOrDefault("--output", "source/outputs/result.json"));
-        var results = new BatchRunner().runFile(question, output);
+        List<Map<String, Object>> results = new BatchRunner().runFile(question, output);
         long ok = results.stream().filter(item -> "success".equals(item.get("status"))).count();
         System.out.println("done: " + ok + "/" + results.size() + " succeeded");
         System.out.println("result saved to: " + output.toAbsolutePath());

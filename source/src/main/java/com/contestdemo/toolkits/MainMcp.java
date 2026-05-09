@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public final class MainMcp {
     private final Map<String, McpTool> tools = new LinkedHashMap<>();
@@ -30,7 +31,9 @@ public final class MainMcp {
     }
 
     public List<String> toolNames() {
-        return tools.keySet().stream().filter(name -> !name.equals("agent_delegate")).toList();
+        return tools.keySet().stream()
+                .filter(name -> !name.equals("agent_delegate"))
+                .collect(Collectors.toList());
     }
 
     public List<String> agentNames() {

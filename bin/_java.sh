@@ -59,6 +59,6 @@ compile_demo() {
   local sources_file
   sources_file="$(mktemp)"
   find source/src/main/java -name '*.java' | sort > "$sources_file"
-  "$javac_cmd" -encoding UTF-8 -d build/classes @"$sources_file"
+  "$javac_cmd" --release 11 -encoding UTF-8 -d build/classes @"$sources_file"
   rm -f "$sources_file"
 }

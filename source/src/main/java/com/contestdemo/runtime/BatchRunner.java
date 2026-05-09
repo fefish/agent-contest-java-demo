@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public final class BatchRunner {
     private final LocalMcpClient mcp = new LocalMcpClient();
@@ -14,7 +15,7 @@ public final class BatchRunner {
     public List<Map<String, Object>> runFile(Path questionPath, Path outputPath) throws Exception {
         List<Map<String, Object>> questions = QuestionIO.loadTasks(questionPath).stream()
                 .map(QuestionIO::publicQuestion)
-                .toList();
+                .collect(Collectors.toList());
         Path questionDir = questionPath.toAbsolutePath().getParent();
         List<Map<String, Object>> results = new ArrayList<>();
         int index = 0;
