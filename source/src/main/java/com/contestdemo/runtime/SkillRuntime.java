@@ -103,7 +103,7 @@ public final class SkillRuntime {
         if (!script.startsWith(skill.dir.normalize())) {
             throw new IllegalArgumentException("skill entrypoint escapes skill package");
         }
-        Process process = new ProcessBuilder("java", script.toAbsolutePath().toString())
+        Process process = new ProcessBuilder(javaCommand(), script.toAbsolutePath().toString())
                 .redirectErrorStream(false)
                 .start();
         process.getOutputStream().write(Json.stringify(arguments).getBytes(StandardCharsets.UTF_8));
@@ -193,6 +193,11 @@ public final class SkillRuntime {
             }
         }
         return "";
+    }
+
+    private static String javaCommand() {
+        Path java = Path.of(System.getProperty("java.home"), "bin", "java");
+        return Files.isExecutable(java) ? java.toString() : "java";
     }
 
     private record SkillPackage(

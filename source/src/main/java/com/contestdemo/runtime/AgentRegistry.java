@@ -49,7 +49,7 @@ public final class AgentRegistry {
         Map<String, Object> input = new LinkedHashMap<>();
         input.put("task", task);
         input.put("context_text", contextText);
-        Process process = new ProcessBuilder("java", script.toAbsolutePath().toString())
+        Process process = new ProcessBuilder(javaCommand(), script.toAbsolutePath().toString())
                 .start();
         process.getOutputStream().write(Json.stringify(input).getBytes(StandardCharsets.UTF_8));
         process.getOutputStream().close();
@@ -75,6 +75,11 @@ public final class AgentRegistry {
         } catch (Exception ignored) {
             return new LinkedHashMap<>();
         }
+    }
+
+    private static String javaCommand() {
+        Path java = Path.of(System.getProperty("java.home"), "bin", "java");
+        return Files.isExecutable(java) ? java.toString() : "java";
     }
 
     private record AgentPackage(String name, Path dir, String entrypoint, int timeoutSeconds) {

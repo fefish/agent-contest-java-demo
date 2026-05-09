@@ -5,6 +5,20 @@ detect_java() {
     echo "$JAVA_BIN"
     return 0
   fi
+  local candidates=(
+    "${JAVA_HOME:-}/bin/java"
+    "/opt/homebrew/opt/openjdk@17/bin/java"
+    "/usr/local/opt/openjdk@17/bin/java"
+    "/opt/homebrew/opt/openjdk/bin/java"
+    "/usr/local/opt/openjdk/bin/java"
+  )
+  local candidate
+  for candidate in "${candidates[@]}"; do
+    if [[ -x "$candidate" ]]; then
+      echo "$candidate"
+      return 0
+    fi
+  done
   if command -v java >/dev/null 2>&1; then
     echo java
     return 0
@@ -17,6 +31,20 @@ detect_javac() {
     echo "$JAVAC_BIN"
     return 0
   fi
+  local candidates=(
+    "${JAVA_HOME:-}/bin/javac"
+    "/opt/homebrew/opt/openjdk@17/bin/javac"
+    "/usr/local/opt/openjdk@17/bin/javac"
+    "/opt/homebrew/opt/openjdk/bin/javac"
+    "/usr/local/opt/openjdk/bin/javac"
+  )
+  local candidate
+  for candidate in "${candidates[@]}"; do
+    if [[ -x "$candidate" ]]; then
+      echo "$candidate"
+      return 0
+    fi
+  done
   if command -v javac >/dev/null 2>&1; then
     echo javac
     return 0
