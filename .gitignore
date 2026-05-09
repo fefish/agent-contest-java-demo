@@ -1,0 +1,8 @@
+*.class
+build/
+.DS_Store
+.env
+.env.*
+!.env.example
+source/outputs/*.json
+!source/outputs/.gitkeep

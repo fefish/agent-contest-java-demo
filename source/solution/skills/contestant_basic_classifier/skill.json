@@ -1,0 +1,14 @@
+{
+  "name": "contestant_basic_classifier",
+  "description": "Assign a tiny demo label to text.",
+  "entrypoint": "scripts/Run.java",
+  "timeout_seconds": 20,
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "text": {"type": "string"}
+    },
+    "required": ["text"],
+    "additionalProperties": false
+  }
+}

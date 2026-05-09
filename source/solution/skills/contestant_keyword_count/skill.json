@@ -1,0 +1,15 @@
+{
+  "name": "contestant_keyword_count",
+  "description": "Count how often each keyword appears in the provided text.",
+  "entrypoint": "scripts/Run.java",
+  "timeout_seconds": 20,
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "text": {"type": "string"},
+      "keywords": {"type": "array", "items": {"type": "string"}}
+    },
+    "required": ["text", "keywords"],
+    "additionalProperties": false
+  }
+}

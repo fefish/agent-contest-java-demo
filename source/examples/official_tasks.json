@@ -1,0 +1,36 @@
+[
+  {
+    "id": "demo_001",
+    "question": "请读取关联文件，并用一句话概括这份公开规则说明。",
+    "files": ["files/public_policy.txt"],
+    "reference_answer": "赛方提供题目、附件和统一运行器，参赛系统自行编排主 Agent、MCP-style tool、skill 和 sub-agent，并在安全边界内输出答案。"
+  },
+  {
+    "id": "demo_002",
+    "question": "请读取关联文件，并统计关键词“安全”“skill”“工具”分别出现了几次。",
+    "files": ["files/simple_skill_note.txt"],
+    "reference_answer": "安全出现 2 次，skill 出现 2 次，工具出现 1 次。"
+  },
+  {
+    "id": "demo_003",
+    "question": "请读取关联文件，使用你认为合适的自定义 skill 给文本打一个示例标签。",
+    "files": ["files/public_policy.txt"],
+    "reference_answer": "可以调用示例 classifier skill，给文本打出 LONG 等示例标签。"
+  },
+  {
+    "id": "demo_004",
+    "question": "请读取关联文件，先给出摘要，再让你的 sub-agent 复核摘要是否覆盖主要规则。",
+    "files": ["files/public_policy.txt"],
+    "reference_answer": "答案应包含摘要和 sub-agent 复核结果，确认覆盖了能力边界、安全输出和忽略恶意指令等规则。"
+  },
+  {
+    "id": "demo_005",
+    "question": "不需要读取文件，请用一句话回答：在这个 demo 中，题目是否必须包含 files 字段？",
+    "reference_answer": "不是必须，只有需要附件时才提供 files 字段。"
+  },
+  {
+    "id": "demo_006",
+    "question": "请调用一个可用的直接函数型 MCP-style tool，回显文本：agent contest demo",
+    "reference_answer": "agent contest demo"
+  }
+]

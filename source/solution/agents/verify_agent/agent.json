@@ -1,0 +1,6 @@
+{
+  "name": "verify_agent",
+  "description": "Basic packaged sub-agent for answer review.",
+  "entrypoint": "scripts/Run.java",
+  "timeout_seconds": 20
+}
