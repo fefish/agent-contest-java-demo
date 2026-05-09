@@ -52,9 +52,60 @@ detect_javac() {
   echo javac
 }
 
+java_major_version() {
+  local command_path
+  command_path="$1"
+  local version_line
+  version_line="$("$command_path" -version 2>&1 | head -n1 || true)"
+  local version
+  if [[ "$version_line" =~ \"([0-9][^\"]*)\" ]]; then
+    version="${BASH_REMATCH[1]}"
+  elif [[ "$version_line" =~ ([0-9]+(\.[0-9]+)*) ]]; then
+    version="${BASH_REMATCH[1]}"
+  else
+    version=""
+  fi
+  local major
+  case "$version" in
+    1.*)
+      major="$(printf '%s' "$version" | cut -d. -f2)"
+      ;;
+    *)
+      major="$(printf '%s' "$version" | cut -d. -f1)"
+      ;;
+  esac
+  if [[ "$major" =~ ^[0-9]+$ ]]; then
+    echo "$major"
+  else
+    echo 0
+  fi
+}
+
+require_jdk_11() {
+  local java_cmd
+  local javac_cmd
+  java_cmd="$(detect_java)"
+  javac_cmd="$(detect_javac)"
+
+  local java_major
+  local javac_major
+  java_major="$(java_major_version "$java_cmd")"
+  javac_major="$(java_major_version "$javac_cmd")"
+
+  if (( java_major < 11 || javac_major < 11 )); then
+    echo "error: Java demo requires JDK 11 or newer." >&2
+    echo "detected java:  $("$java_cmd" -version 2>&1 | head -n1)" >&2
+    echo "detected javac: $("$javac_cmd" -version 2>&1 | head -n1)" >&2
+    echo "please install JDK 11+ and make sure JAVA_HOME, java, and javac point to the same JDK." >&2
+    echo "on Windows Git Bash, run: export JAVA_HOME=/c/path/to/jdk-17 && export PATH=\"\$JAVA_HOME/bin:\$PATH\"" >&2
+    exit 1
+  fi
+}
+
 compile_demo() {
   local javac_cmd
   javac_cmd="$(detect_javac)"
+  require_jdk_11
   mkdir -p build/classes
   local sources_file
   sources_file="$(mktemp)"
