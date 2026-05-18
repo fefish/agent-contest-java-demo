@@ -8,7 +8,7 @@
 
 - 主 Agent：`source/src/main/java/com/contestdemo/solution/ContestantAgent.java`
 - 参赛者 skill 包：`source/solution/skills/`
-- 参赛者 MCP-style tools：由 `source/toolkits/MainMcp.java` 注册，参赛者可照示例扩展
+- 参赛者 MCP-style tools：由 `source/src/main/java/com/contestdemo/toolkits/MainMcp.java` 注册，参赛者可照示例扩展
 - MCP-style 注册入口：`source/src/main/java/com/contestdemo/toolkits/MainMcp.java`
 - sub-agent 包：`source/solution/agents/`
 - 赛方源任务：`source/examples/official_tasks.json`
@@ -17,6 +17,8 @@
 本 demo 只负责从题目运行到答案，不包含赛方后续私有判断逻辑。
 
 ## 怎么跑
+
+需要 JDK 21+，无需 Maven/Gradle。
 
 ```bash
 bash bin/check_env.sh

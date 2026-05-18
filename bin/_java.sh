@@ -7,8 +7,8 @@ detect_java() {
   fi
   local candidates=(
     "${JAVA_HOME:-}/bin/java"
-    "/opt/homebrew/opt/openjdk@17/bin/java"
-    "/usr/local/opt/openjdk@17/bin/java"
+    "/opt/homebrew/opt/openjdk@21/bin/java"
+    "/usr/local/opt/openjdk@21/bin/java"
     "/opt/homebrew/opt/openjdk/bin/java"
     "/usr/local/opt/openjdk/bin/java"
   )
@@ -33,8 +33,8 @@ detect_javac() {
   fi
   local candidates=(
     "${JAVA_HOME:-}/bin/javac"
-    "/opt/homebrew/opt/openjdk@17/bin/javac"
-    "/usr/local/opt/openjdk@17/bin/javac"
+    "/opt/homebrew/opt/openjdk@21/bin/javac"
+    "/usr/local/opt/openjdk@21/bin/javac"
     "/opt/homebrew/opt/openjdk/bin/javac"
     "/usr/local/opt/openjdk/bin/javac"
   )
@@ -81,7 +81,7 @@ java_major_version() {
   fi
 }
 
-require_jdk_11() {
+require_jdk_21() {
   local java_cmd
   local javac_cmd
   java_cmd="$(detect_java)"
@@ -92,12 +92,12 @@ require_jdk_11() {
   java_major="$(java_major_version "$java_cmd")"
   javac_major="$(java_major_version "$javac_cmd")"
 
-  if (( java_major < 11 || javac_major < 11 )); then
-    echo "error: Java demo requires JDK 11 or newer." >&2
+  if (( java_major < 21 || javac_major < 21 )); then
+    echo "error: Java demo requires JDK 21 or newer." >&2
     echo "detected java:  $("$java_cmd" -version 2>&1 | head -n1)" >&2
     echo "detected javac: $("$javac_cmd" -version 2>&1 | head -n1)" >&2
-    echo "please install JDK 11+ and make sure JAVA_HOME, java, and javac point to the same JDK." >&2
-    echo "on Windows Git Bash, run: export JAVA_HOME=/c/path/to/jdk-17 && export PATH=\"\$JAVA_HOME/bin:\$PATH\"" >&2
+    echo "please install JDK 21+ and make sure JAVA_HOME, java, and javac point to the same JDK." >&2
+    echo "on Windows Git Bash, run: export JAVA_HOME=/c/path/to/jdk-21 && export PATH=\"\$JAVA_HOME/bin:\$PATH\"" >&2
     exit 1
   fi
 }
@@ -105,11 +105,11 @@ require_jdk_11() {
 compile_demo() {
   local javac_cmd
   javac_cmd="$(detect_javac)"
-  require_jdk_11
+  require_jdk_21
   mkdir -p build/classes
   local sources_file
   sources_file="$(mktemp)"
   find source/src/main/java -name '*.java' | sort > "$sources_file"
-  "$javac_cmd" --release 11 -encoding UTF-8 -d build/classes @"$sources_file"
+  "$javac_cmd" --release 21 -encoding UTF-8 -d build/classes @"$sources_file"
   rm -f "$sources_file"
 }
