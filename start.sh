@@ -10,9 +10,9 @@ detect_java() {
     return 0
   fi
   local candidates=(
-    "${JAVA_HOME:-}/bin/java"
     "/opt/homebrew/opt/openjdk@21/bin/java"
     "/usr/local/opt/openjdk@21/bin/java"
+    "${JAVA_HOME:-}/bin/java"
     "/opt/homebrew/opt/openjdk/bin/java"
     "/usr/local/opt/openjdk/bin/java"
   )
@@ -32,9 +32,9 @@ detect_javac() {
     return 0
   fi
   local candidates=(
-    "${JAVA_HOME:-}/bin/javac"
     "/opt/homebrew/opt/openjdk@21/bin/javac"
     "/usr/local/opt/openjdk@21/bin/javac"
+    "${JAVA_HOME:-}/bin/javac"
     "/opt/homebrew/opt/openjdk/bin/javac"
     "/usr/local/opt/openjdk/bin/javac"
   )
