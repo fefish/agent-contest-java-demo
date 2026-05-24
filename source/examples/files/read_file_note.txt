@@ -1,0 +1,4 @@
+附件校验说明：
+
+本题要求 Agent 通过 text_read_file 读取这个文件，而不是猜测答案。
+验证码：FILE-ACCESS-OK-20260525

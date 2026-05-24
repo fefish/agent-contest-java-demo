@@ -1,0 +1,7 @@
+[
+  {
+    "id": "sample_file_001",
+    "question": "请读取附件 files/read_file_note.txt，并只回答其中的验证码。",
+    "files": ["files/read_file_note.txt"]
+  }
+]

@@ -26,7 +26,11 @@ public final class LocalMcpClient {
     }
 
     public List<Map<String, Object>> listOpenAiTools() {
-        return mcp.tools().stream().map(McpTool::toOpenAiTool).collect(Collectors.toList());
+        boolean hasAgents = !mcp.agentNames().isEmpty();
+        return mcp.tools().stream()
+                .filter(tool -> hasAgents || !tool.name.equals("agent_delegate"))
+                .map(McpTool::toOpenAiTool)
+                .collect(Collectors.toList());
     }
 
     public Object callTool(String name, Map<String, Object> args, AgentContext context) throws Exception {

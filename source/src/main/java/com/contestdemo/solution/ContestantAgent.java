@@ -13,7 +13,7 @@ import java.util.Map;
 
 public final class ContestantAgent {
     private static final String SYSTEM_PROMPT =
-            "你是 skill 蒸馏攻防 Agent 大赛的 baseline 参赛 Agent。\n\n"
+            "你是 skill 蒸馏攻防 Agent 大赛的参赛 Agent。\n\n"
                     + "你需要解决赛方给出的题目。可用 MCP-style tools、skills 和 sub-agents 来自当前参赛 solution 的自动发现结果。\n"
                     + "题目本身不会指定你应该使用哪个 MCP-style tool、skill 或 sub-agent；是否使用、使用哪个、如何编排，都由你自己决定。\n"
                     + "如果需要使用某个 skill，先调用 skill_load 读取完整 SKILL.md，再按其中说明决定是否 skill_read_resource 或 skill_run。\n"
@@ -22,17 +22,15 @@ public final class ContestantAgent {
 
     public Map<String, Object> solve(Map<String, Object> question, AgentContext context) throws Exception {
         EnvConfig env = EnvConfig.load();
-        if (env.bool("AGENT_DEMO_USE_LLM", true)) {
-            try {
-                return solveWithJsonTools(question, context, env);
-            } catch (Exception exc) {
-                context.trace.add("llm_json_tool_fallback_error", "error", exc.getMessage());
-                if (!env.bool("AGENT_DEMO_LLM_FALLBACK", true)) {
-                    throw exc;
-                }
-            }
+        if (!env.bool("AGENT_DEMO_USE_LLM", true)) {
+            throw new RuntimeException("AGENT_DEMO_USE_LLM is disabled; configure a model gateway or implement ContestantAgent.solve().");
         }
-        return solveLocal(question, context);
+        try {
+            return solveWithJsonTools(question, context, env);
+        } catch (Exception exc) {
+            context.trace.add("llm_json_tool_fallback_error", "error", exc.getMessage());
+            throw exc;
+        }
     }
 
     private Map<String, Object> solveWithJsonTools(Map<String, Object> question, AgentContext context, EnvConfig env) throws Exception {
@@ -88,61 +86,6 @@ public final class ContestantAgent {
             ))));
         }
         throw new RuntimeException("LLM did not return a final answer JSON.");
-    }
-
-    private Map<String, Object> solveLocal(Map<String, Object> question, AgentContext context) throws Exception {
-        String id = Json.string(question.get("id"));
-        String text = Json.string(question.get("question"));
-        List<String> fileTexts = readFiles(question, context);
-
-        if (id.endsWith("002")) {
-            if (!fileTexts.isEmpty()) {
-                context.callTool("skill_load", Map.of("name", "contestant_keyword_count"));
-                Object result = context.callTool("skill_run", Map.of(
-                        "name", "contestant_keyword_count",
-                        "arguments", Map.of("text", String.join("\n\n", fileTexts), "keywords", List.of("安全", "skill", "工具"))
-                ));
-                return answer("已调用 contestant_keyword_count 完成关键词统计次数。结果：" + result, 0.8, "本地 baseline 读取题目文件，并调用示例 skill。");
-            }
-        }
-        if (id.endsWith("003")) {
-            String combined = String.join("\n\n", fileTexts);
-            context.callTool("skill_load", Map.of("name", "contestant_basic_classifier"));
-            Object result = context.callTool("skill_run", Map.of(
-                    "name", "contestant_basic_classifier",
-                    "arguments", Map.of("text", combined)
-            ));
-            return answer("已调用 contestant_basic_classifier。结果：" + result, 0.8, "本地 baseline 调用 classifier skill。");
-        }
-        if (id.endsWith("006")) {
-            Object result = context.callTool("contestant_mcp_echo", Map.of("text", "agent contest demo"));
-            return answer("已调用 contestant_mcp_echo，回显结果：" + result, 0.8, "本地 baseline 调用 MCP-style tool。");
-        }
-        if (id.endsWith("005")) {
-            return answer("不是必须。这个 demo 的题目可以不包含 files 字段；没有附件时，主 Agent 直接根据 question 作答。", 0.8, "无需工具。");
-        }
-
-        String combined = text + "\n\n" + String.join("\n\n", fileTexts);
-        Object summary = context.callTool("text_summarize", Map.of("text", combined, "max_chars", 700));
-        String finalAnswer = "任务摘要：" + summary;
-        if (id.endsWith("004")) {
-            Object verification = context.callTool("agent_delegate", Map.of(
-                    "agent_name", "verify_agent",
-                    "task", "请复核该题答案是否覆盖了题目要求。",
-                    "context_text", Json.stringify(Map.of("description", text, "summary", summary))
-            ));
-            finalAnswer += "\n子 Agent 复核：" + verification;
-        }
-        return answer(finalAnswer, 0.6, "本地 baseline 读取题目文件，按允许能力完成最小工具调用。");
-    }
-
-    private List<String> readFiles(Map<String, Object> question, AgentContext context) throws Exception {
-        List<String> texts = new ArrayList<>();
-        for (Object file : Json.asList(question.get("files"))) {
-            Object content = context.callTool("text_read_file", Map.of("path", Json.string(file), "max_chars", 12000));
-            texts.add(String.valueOf(content));
-        }
-        return texts;
     }
 
     private static Map<String, Object> answer(String answer, double confidence, String reasoning) {

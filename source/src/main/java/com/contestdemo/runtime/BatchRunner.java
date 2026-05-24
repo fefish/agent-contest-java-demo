@@ -42,7 +42,7 @@ public final class BatchRunner {
             Map<String, Object> result = baseResult(question, trace);
             result.put("status", "success");
             result.put("model_status", modelStatus(trace.events(), true));
-            result.put("fallback_used", !result.get("model_status").equals("json_tools"));
+            result.put("fallback_used", false);
             result.put("answer", answer.getOrDefault("answer", ""));
             result.put("confidence", answer.get("confidence"));
             result.put("reasoning_summary", answer.getOrDefault("reasoning_summary", ""));
