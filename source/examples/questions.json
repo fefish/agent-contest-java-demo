@@ -1,38 +1,6 @@
 [
   {
-    "id": "demo_001",
-    "question": "请读取关联文件，并用一句话概括这份公开规则说明。",
-    "files": [
-      "files/public_policy.txt"
-    ]
-  },
-  {
-    "id": "demo_002",
-    "question": "请读取关联文件，并统计关键词“安全”“skill”“工具”分别出现了几次。",
-    "files": [
-      "files/simple_skill_note.txt"
-    ]
-  },
-  {
-    "id": "demo_003",
-    "question": "请读取关联文件，使用你认为合适的自定义 skill 给文本打一个示例标签。",
-    "files": [
-      "files/public_policy.txt"
-    ]
-  },
-  {
-    "id": "demo_004",
-    "question": "请读取关联文件，先给出摘要，再让你的 sub-agent 复核摘要是否覆盖主要规则。",
-    "files": [
-      "files/public_policy.txt"
-    ]
-  },
-  {
-    "id": "demo_005",
-    "question": "不需要读取文件，请用一句话回答：在这个 demo 中，题目是否必须包含 files 字段？"
-  },
-  {
-    "id": "demo_006",
-    "question": "请调用一个可用的直接函数型 MCP-style tool，回显文本：agent contest demo"
+    "id": "sample_001",
+    "question": "这是公开占位样例题，请回答：OK"
   }
 ]

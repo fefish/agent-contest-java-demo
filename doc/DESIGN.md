@@ -2,49 +2,27 @@
 
 ## 角色边界
 
-赛方负责：
+赛方负责维护含参考答案和评分字段的内部源任务 JSON，并在平台侧生成只含题面的运行题目 JSON。
 
-- 维护含参考答案的源任务 JSON。
-- 用脚本生成只含题面的运行题目 JSON。
-- 提供题目附件和统一运行器。
-- 收集统一 `result.json`。
-
-参赛者负责：
-
-- 开发主 Agent。
-- 开发自己的 SKILL.md skill 包。
-- 开发自己的 MCP-style tools。
-- 开发自己的 sub-agent 包。
-- 在主 Agent 中实现编排策略。
+参赛者负责开发主 Agent、自己的 SKILL.md skill 包、MCP-style tools、sub-agent 包，并在主 Agent 中实现编排策略。
 
 ## 运行链路
 
 ```text
-official_tasks.json
-  -> bin/prepare_questions.sh
-  -> questions.json
-  -> source/src/main/java/com/contestdemo/Main.java
+questions.json
+  -> start.sh
+  -> com.contestdemo.Main
   -> BatchRunner
-  -> 自动发现 source/solution/skills、source/solution/mcp 和 source/solution/agents
+  -> 自动发现 source/solution/skills 和 source/solution/agents
   -> ContestantAgent.solve()
-  -> AgentContext.callTool()
+  -> context.callTool()
   -> LocalMcpClient
   -> built-in tools / skill runtime / sub-agents
   -> result.json
 ```
 
-## 目录职责
+赛方内部源任务 JSON 可以包含 `reference_answer`、`expected_keywords`、`exclude_keywords`、`scoring_notes`、`score`、`difficulty`、`isPublic` 等私有字段。传给本 demo 的 `questions.json` 只保留 `id`、`question`、`files`。
 
-```text
-source/src/main/java/   Java 运行器和 baseline Agent
-source/examples/        demo 源任务、运行题目和附件
-source/solution/        参赛者开发区
-```
+## 文件权限
 
-## 能力边界
-
-- `source/solution/skills/`：SKILL.md-first 能力包，适合有说明、资源和可选脚本的蒸馏 skill。
-- `source/solution/mcp/`：MCP-style tool 说明和示例；Java 注册入口在 `MainMcp.java`。
-- `source/solution/agents/`：可委托 sub-agent，适合单独流程、复核或多 agent 编排。
-
-本 demo 只负责从题目运行到答案；赛方后续私有判断逻辑可以在独立系统中接入。
+题目附件路径以 `questions.json` 所在目录为基准。运行器会把每题 `files` 解析为允许文件列表，`text_read_file` 只能读取这些声明过的文件。

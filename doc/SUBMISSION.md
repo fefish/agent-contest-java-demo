@@ -3,28 +3,27 @@
 正式比赛建议只收参赛者的：
 
 ```text
-source/src/main/java/com/contestdemo/solution/ContestantAgent.java
 source/solution/
+source/src/main/java/com/contestdemo/solution/
 ```
 
-其中包括：
+其中包括主 Agent、skill 包、MCP-style tools 和 sub-agent 包。
+
+参赛者不应该修改：
 
 ```text
-skills/
-mcp/
-agents/
+source/src/main/java/com/contestdemo/runtime/
+source/examples/
 ```
-
-Skill 以 `SKILL.md` 作为必需入口；`skill.json` 和 `scripts/Run.java` 只在需要可执行 skill 时提供。MCP-style tools 可按 `contestant_mcp_echo` 示例扩展。Sub-agent 以 `AGENT.md`、`agent.json` 和 `scripts/Run.java` 作为一个可执行包。
 
 本地调试：
 
 ```bash
-bash bin/run_demo.sh
+bash start.sh
 ```
 
-指定赛方题目运行：
+赛方平台指定运行题目和结果路径时，可以运行：
 
 ```bash
-bash bin/run_submit.sh path/to/questions.json path/to/result.json
+bash start.sh path/to/questions.json path/to/result.json
 ```

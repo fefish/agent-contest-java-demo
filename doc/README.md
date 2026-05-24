@@ -4,25 +4,20 @@
 
 这是一个“赛方出题、参赛者开发 Agent 系统、赛方收统一答案”的 Java 最小可运行 demo。
 
-它只保留基础能力：
+它保留基础能力：
 
 - 主 Agent：`source/src/main/java/com/contestdemo/solution/ContestantAgent.java`
 - 参赛者 skill 包：`source/solution/skills/`
-- 参赛者 MCP-style tools：由 `source/src/main/java/com/contestdemo/toolkits/MainMcp.java` 注册，参赛者可照示例扩展
-- MCP-style 注册入口：`source/src/main/java/com/contestdemo/toolkits/MainMcp.java`
+- 参赛者 MCP-style tools：`source/src/main/java/com/contestdemo/toolkits/MainMcp.java`
 - sub-agent 包：`source/solution/agents/`
-- 赛方源任务：`source/examples/official_tasks.json`
 - 运行题目：`source/examples/questions.json`
 
 本 demo 只负责从题目运行到答案，不包含赛方后续私有判断逻辑。
 
 ## 怎么跑
 
-需要 JDK 21+，无需 Maven/Gradle。
-
 ```bash
-bash bin/check_env.sh
-bash bin/run_demo.sh
+bash start.sh
 ```
 
 输出在：
@@ -31,123 +26,81 @@ bash bin/run_demo.sh
 source/outputs/result.json
 ```
 
-`run_demo.sh` 做三件事：
+`start.sh` 做两件事：
 
-1. 从 `source/examples/official_tasks.json` 生成只含题目的 `source/examples/questions.json`。
-2. 编译并运行主 Agent，从题目生成答案。
-3. 打印简洁答案视图。
+1. 运行主 Agent，从题目生成答案。
+2. 打印简洁答案视图。
 
-如果只想验证框架，不走模型：
+赛方平台也可以传入自己的运行题目文件和结果输出路径：
 
 ```bash
-AGENT_DEMO_USE_LLM=0 bash bin/run_demo.sh
+bash start.sh <questions_json> <result_json>
 ```
 
-## 赛方题目文件
+用户自己测试时，可以直接修改 `source/examples/questions.json`，或把自己的题目文件作为第一个参数传入。模型连通性、环境检查等调试能力建议放在赛方单独检查包里，不放进选手 demo 仓。
 
-赛方可以维护一份含参考答案的源文件：
+## 题目文件
+
+选手仓运行时只接收题面文件：
 
 ```json
-{
-  "id": "demo_001",
-  "question": "请读取关联文件，并用一句话概括这份公开规则说明。",
-  "files": ["files/public_policy.txt"],
-  "reference_answer": "这里写赛方参考答案，运行时不会暴露给参赛 Agent。"
-}
+[
+  {
+    "id": "sample_001",
+    "question": "这是公开占位样例题，请回答：OK"
+  }
+]
 ```
 
-生成公开题目：
+指定题目与输出：
 
 ```bash
-bash bin/prepare_questions.sh source/examples/official_tasks.json source/examples/questions.json
+bash start.sh path/to/questions.json path/to/result.json
 ```
 
-公开题目只保留 `id`、`question`、`files`。
+赛方内部可以维护含 `reference_answer`、`expected_keywords`、`score`、`difficulty`、`isPublic` 等字段的源任务 JSON，但传给本 demo 的应是已经剥离私有字段后的运行题目 JSON。题目附件路径相对题目 JSON 所在目录。
 
 ## 参赛者开发什么
 
-参赛者主要修改 `source/src/main/java/com/contestdemo/solution/ContestantAgent.java` 和 `source/solution/`。
+参赛者主要修改 `source/solution/` 和主 Agent。
 
-主 Agent 通过下面这个接口调用 MCP-style tool、skill runtime 或 sub-agent：
+主 Agent 入口：
 
-```java
-context.callTool("tool_name", args);
+```text
+source/src/main/java/com/contestdemo/solution/ContestantAgent.java
 ```
 
-### 自定义 Skill
+主 Agent 通过 `context.callTool(...)` 调用 MCP-style tool、skill runtime 或 sub-agent。
 
-目录：
+Skill 包放在：
 
 ```text
 source/solution/skills/<skill_name>/
 ```
 
-每个 skill 是一个包：
-
-```text
-SKILL.md
-skill.json        # 可选：声明 executable entrypoint 和 input_schema
-scripts/Run.java  # 可选：skill_run 执行入口
-references/       # 可选：skill_read_resource 可读取
-assets/           # 可选：skill_read_resource 可读取
-```
-
-主 Agent 使用 skill 的通用工具：
-
-```text
-skill_load
-skill_read_resource
-skill_run
-```
-
-### MCP-style tools
-
-Java 版 MCP-style tool 由 `source/src/main/java/com/contestdemo/toolkits/MainMcp.java` 注册。示例工具是 `contestant_mcp_echo`。
-
-### Sub-agent
-
-目录：
+Sub-agent 包放在：
 
 ```text
 source/solution/agents/<agent_name>/
 ```
 
-每个 sub-agent 是一个包：
-
-```text
-AGENT.md
-agent.json
-scripts/Run.java
-```
-
-主 Agent 调 sub-agent 的方式：
-
-```java
-context.callTool("agent_delegate", Map.of(
-    "agent_name", "verify_agent",
-    "task", "请复核这个答案",
-    "context_text", "..."
-));
-```
-
 ## 输出格式
 
-运行后输出 JSON list：
+运行后输出 JSON list。赛方收答案时主要读取：
 
-```json
-{
-  "id": "demo_001",
-  "question": "...",
-  "status": "success",
-  "model_status": "json_tools",
-  "fallback_used": false,
-  "answer": "...",
-  "confidence": 0.95,
-  "reasoning_summary": "...",
-  "used_tools": ["text_read_file"],
-  "used_skills": [],
-  "trace": []
-}
+```text
+id
+answer
+confidence
+status
 ```
 
 `trace`、`used_tools`、`used_skills` 用于调试和审计。
+
+## 模型配置
+
+配置在当前仓库根目录的 `.env`。
+
+```bash
+cp .env.example .env
+```
