@@ -7,7 +7,7 @@
 选手仓和赛方平台入口直接接收运行题目 JSON：
 
 ```bash
-bash start.sh <questions_json> <result_json>
+bash start.sh <questions_json> <result_json> [package_id]
 ```
 
 运行题目只保留公开字段：

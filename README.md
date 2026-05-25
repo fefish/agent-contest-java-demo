@@ -7,16 +7,18 @@
 快速运行：
 
 ```bash
-bash start.sh
+bash start.sh source/examples/questions.json source/outputs/result.json
 ```
 
 赛方平台也可以传入自己的运行题目文件和结果输出路径：
 
 ```bash
-bash start.sh <questions_json> <result_json>
+bash start.sh <questions_json> <result_json> [package_id]
 ```
 
-用户自己测试时，可以直接修改 `source/examples/questions.json`，或把自己的题目文件作为第一个参数传入。
+第三个参数可选；传入后会作为 HTTP header `package_id` 透传给模型网关。
+
+用户自己测试时，可以直接修改 `source/examples/questions.json`，或把自己的题目文件作为第一个参数传入，并把结果路径作为第二个参数。
 
 参赛者主要修改：
 

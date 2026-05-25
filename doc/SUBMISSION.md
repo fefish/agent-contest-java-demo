@@ -19,11 +19,11 @@ source/examples/
 本地调试：
 
 ```bash
-bash start.sh
+bash start.sh source/examples/questions.json source/outputs/result.json
 ```
 
 赛方平台指定运行题目和结果路径时，可以运行：
 
 ```bash
-bash start.sh path/to/questions.json path/to/result.json
+bash start.sh path/to/questions.json path/to/result.json [package_id]
 ```

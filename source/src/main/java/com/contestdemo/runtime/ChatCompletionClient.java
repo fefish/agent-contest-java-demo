@@ -34,13 +34,16 @@ public final class ChatCompletionClient {
         if (config.maxTokens() > 0) {
             payload.put("max_tokens", config.maxTokens());
         }
-        HttpRequest request = HttpRequest.newBuilder()
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
                 .uri(URI.create(config.chatCompletionsUrl()))
                 .timeout(Duration.ofSeconds(config.timeoutSeconds()))
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + config.apiKey())
-                .POST(HttpRequest.BodyPublishers.ofString(Json.stringify(payload), StandardCharsets.UTF_8))
-                .build();
+                .POST(HttpRequest.BodyPublishers.ofString(Json.stringify(payload), StandardCharsets.UTF_8));
+        if (!config.packageId().isBlank()) {
+            requestBuilder.header("package_id", config.packageId());
+        }
+        HttpRequest request = requestBuilder.build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
         if (response.statusCode() < 200 || response.statusCode() >= 300) {
             throw new RuntimeException("Model gateway HTTP " + response.statusCode() + ": " + response.body());

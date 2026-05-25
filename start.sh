@@ -91,8 +91,17 @@ compile_demo() {
   rm -f "$sources_file"
 }
 
-QUESTION_PATH="${QUESTION_PATH:-${1:-source/examples/questions.json}}"
-RESULT_PATH="${RESULT_PATH:-${2:-source/outputs/result.json}}"
+if [[ $# -lt 2 || $# -gt 3 ]]; then
+  echo "Usage: bash start.sh <question_path> <result_path> [package_id]" >&2
+  exit 2
+fi
+
+QUESTION_PATH="$1"
+RESULT_PATH="$2"
+PACKAGE_ID="${3:-}"
+
+export PACKAGE_ID
+export packageId="$PACKAGE_ID"
 
 compile_demo
 JAVA_CMD="$(detect_java)"

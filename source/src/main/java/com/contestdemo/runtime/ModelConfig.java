@@ -8,6 +8,7 @@ public final class ModelConfig {
     private final double temperature;
     private final int maxTokens;
     private final boolean stream;
+    private final String packageId;
 
     public ModelConfig(
             String chatCompletionsUrl,
@@ -16,7 +17,8 @@ public final class ModelConfig {
             int timeoutSeconds,
             double temperature,
             int maxTokens,
-            boolean stream
+            boolean stream,
+            String packageId
     ) {
         this.chatCompletionsUrl = chatCompletionsUrl;
         this.apiKey = apiKey;
@@ -25,6 +27,7 @@ public final class ModelConfig {
         this.temperature = temperature;
         this.maxTokens = maxTokens;
         this.stream = stream;
+        this.packageId = packageId;
     }
 
     public static ModelConfig fromEnv(EnvConfig env) {
@@ -43,7 +46,8 @@ public final class ModelConfig {
                 env.integer("AGENT_DEMO_TIMEOUT_SECONDS", 60),
                 env.decimal("AGENT_DEMO_TEMPERATURE", 0.2),
                 env.integer("AGENT_DEMO_MAX_TOKENS", 0),
-                env.bool("AGENT_DEMO_STREAM", false)
+                env.bool("AGENT_DEMO_STREAM", false),
+                packageId(env)
         );
     }
 
@@ -75,6 +79,10 @@ public final class ModelConfig {
         return stream;
     }
 
+    public String packageId() {
+        return packageId;
+    }
+
     public boolean configured() {
         return !chatCompletionsUrl.isBlank() && !apiKey.isBlank() && !model.isBlank();
     }
@@ -82,6 +90,14 @@ public final class ModelConfig {
     private static String stripSlash(String value) {
         while (value.endsWith("/")) {
             value = value.substring(0, value.length() - 1);
+        }
+        return value;
+    }
+
+    private static String packageId(EnvConfig env) {
+        String value = env.get("PACKAGE_ID", "");
+        if (value.isBlank()) {
+            value = env.get("packageId", "");
         }
         return value;
     }

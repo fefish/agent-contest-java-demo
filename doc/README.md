@@ -17,7 +17,7 @@
 ## 怎么跑
 
 ```bash
-bash start.sh
+bash start.sh source/examples/questions.json source/outputs/result.json
 ```
 
 输出在：
@@ -34,10 +34,12 @@ source/outputs/result.json
 赛方平台也可以传入自己的运行题目文件和结果输出路径：
 
 ```bash
-bash start.sh <questions_json> <result_json>
+bash start.sh <questions_json> <result_json> [package_id]
 ```
 
-用户自己测试时，可以直接修改 `source/examples/questions.json`，或把自己的题目文件作为第一个参数传入。模型连通性、环境检查等调试能力建议放在赛方单独检查包里，不放进选手 demo 仓。
+第三个参数可选；传入后会作为 HTTP header `package_id` 透传给模型网关。
+
+用户自己测试时，可以直接修改 `source/examples/questions.json`，或把自己的题目文件作为第一个参数传入，并把结果路径作为第二个参数。模型连通性、环境检查等调试能力建议放在赛方单独检查包里，不放进选手 demo 仓。
 
 ## 题目文件
 
@@ -55,7 +57,7 @@ bash start.sh <questions_json> <result_json>
 指定题目与输出：
 
 ```bash
-bash start.sh path/to/questions.json path/to/result.json
+bash start.sh path/to/questions.json path/to/result.json [package_id]
 ```
 
 赛方内部可以维护含 `reference_answer`、`expected_keywords`、`score`、`difficulty`、`isPublic` 等字段的源任务 JSON，但传给本 demo 的应是已经剥离私有字段后的运行题目 JSON。题目附件路径相对题目 JSON 所在目录。
