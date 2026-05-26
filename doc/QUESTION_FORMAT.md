@@ -26,7 +26,7 @@ bash start.sh <questions_json> <result_json> [package_id]
 - `question`
 - `files`，可选
 
-`reference_answer`、`expected_keywords`、`exclude_keywords`、`scoring_notes`、`score`、`difficulty`、`isPublic` 不会发给参赛 Agent。赛方内部源任务需要在平台侧先转换成运行题目，再调用本 demo。
+`type`、`reference_answer`、`expected_keywords`、`exclude_keywords`、`scoring_notes`、`score`、`difficulty`、`isPublic` 不会发给参赛 Agent。`type` 当前固定为 `equal`，表示按 official 中的参考答案和评分规则做确定性核验。赛方内部源任务需要在平台侧先转换成运行题目，再调用本 demo。
 
 ## 输出格式
 

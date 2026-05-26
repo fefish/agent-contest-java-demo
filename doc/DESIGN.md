@@ -21,7 +21,7 @@ questions.json
   -> result.json
 ```
 
-赛方内部源任务 JSON 可以包含 `reference_answer`、`expected_keywords`、`exclude_keywords`、`scoring_notes`、`score`、`difficulty`、`isPublic` 等私有字段。传给本 demo 的 `questions.json` 只保留 `id`、`question`、`files`。
+赛方内部源任务 JSON 可以包含 `type`、`reference_answer`、`expected_keywords`、`exclude_keywords`、`scoring_notes`、`score`、`difficulty`、`isPublic` 等私有字段；当前 `type` 固定为 `equal`。传给本 demo 的 `questions.json` 只保留 `id`、`question`、`files`。
 
 ## 文件权限
 

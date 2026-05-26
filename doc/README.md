@@ -60,7 +60,7 @@ bash start.sh <questions_json> <result_json> [package_id]
 bash start.sh path/to/questions.json path/to/result.json [package_id]
 ```
 
-赛方内部可以维护含 `reference_answer`、`expected_keywords`、`score`、`difficulty`、`isPublic` 等字段的源任务 JSON，但传给本 demo 的应是已经剥离私有字段后的运行题目 JSON。题目附件路径相对题目 JSON 所在目录。
+赛方内部可以维护含 `type`、`reference_answer`、`expected_keywords`、`score`、`difficulty`、`isPublic` 等字段的源任务 JSON；当前 `type` 固定为 `equal`。传给本 demo 的应是已经剥离私有字段后的运行题目 JSON。题目附件路径相对题目 JSON 所在目录。
 
 ## 参赛者开发什么
 
